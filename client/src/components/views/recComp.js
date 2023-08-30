@@ -6,15 +6,19 @@ import { useState, useRef } from 'react';
 import FiltersModal from '../filtersModal';
 import { loadingIcon } from '../loadingicon';
 import headshot from '../../images/headshot.png';
+import { useEffect } from 'react';
 
 const RecComp = () => {
     const dispatch = useDispatch();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const {
         whichPlayer,
-        playerToSearch,
-        playerToInclude,
-        playerToExclude,
+        playerToSearch1,
+        playerToSearch2,
+        playerToInclude1,
+        playerToExclude1,
+        playerToInclude2,
+        playerToExclude2,
         breakoutby,
         startSeason,
         startWeek,
@@ -33,7 +37,7 @@ const RecComp = () => {
     const keys_one = [];
     const keys_two = [];
 
-    console.log(playerData1)
+
 
     return <>
         <form onSubmit={(e) => dispatch(fetchReceivingStats(e))}>
@@ -41,8 +45,11 @@ const RecComp = () => {
                 <label>
                     <span onClick={() => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { whichPlayer: 'Player 2' } : { whichPlayer: 'Player 1' }))}>{whichPlayer}</span>
                     <Dropdown
-                        searched={playerToSearch}
-                        setSearched={(value) => dispatch(setReceivingCompState({ playerToSearch: value }))}
+                        searched={whichPlayer === 'Player 1' ? playerToSearch1 : playerToSearch2}
+                        setSearched={(value) => whichPlayer === 'Player 1'
+                            ? dispatch(setReceivingCompState({ playerToSearch1: value }))
+                            : dispatch(setReceivingCompState({ playerToSearch2: value }))
+                        }
                         list={players}
                         sendDropdownVisible={(data) => setDropdownVisible(data)}
                     />
@@ -109,13 +116,18 @@ const RecComp = () => {
             filtersModalVisible ?
                 <FiltersModal
                     ref={filtersModalRef}
-                    playerToInclude={playerToInclude}
-                    setPlayerToInclude={(value) => dispatch(setReceivingCompState({ playerToInclude: value }))}
-                    playerToExclude={playerToExclude}
-                    setPlayerToExclude={(value) => dispatch(setReceivingCompState({ playerToExclude: value }))}
+                    whichPlayer={whichPlayer}
+                    playerToSearch={whichPlayer === 'Player 1' ? playerToSearch1 : playerToSearch2}
+                    playerToInclude={whichPlayer === 'Player 1' ? playerToInclude1 : playerToInclude2}
+                    setPlayerToInclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToInclude1: [...playerToInclude1, value] } : { playerToInclude2: [...playerToInclude2, value] }))}
+                    removePlayertoInclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToInclude1: playerToInclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToInclude2: playerToInclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
+                    playerToExclude={whichPlayer === 'Player 1' ? playerToExclude1 : playerToExclude2}
+                    setPlayerToExclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToExclude1: [...playerToExclude1, value] } : { playerToExclude2: [...playerToExclude2, value] }))}
+                    removePlayertoExclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToExclude1: playerToExclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToExclude2: playerToExclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
                     setFiltersModalVisible={(value) => dispatch(setReceivingCompState({ filtersModalVisible: value }))}
                     breakoutby={breakoutby}
                     setBreakoutby={(value) => dispatch(setReceivingCompState({ breakoutby: value }))}
+
                 />
                 : null
         }
@@ -149,8 +161,12 @@ const RecComp = () => {
                                         </h3>
                                         <h3>
                                             <span>
-                                                {playerData1.include !== '' && 'With: ' + playerData1.include}
-                                                {playerData1.exclude !== '' && 'Without: ' + playerData1.exclude}
+                                                <div>
+                                                    {playerData1.include.find(p => p.gsis_id) && 'With: ' + playerData1.include.map(p => ' ' + p.display_name)}
+                                                </div>
+                                                <div>
+                                                    {playerData1.exclude.find(p => p.gsis_id) && 'Without: ' + playerData1.exclude.map(p => ' ' + p.display_name)}
+                                                </div>
                                             </span>
                                         </h3>
                                         <h2>
@@ -282,8 +298,12 @@ const RecComp = () => {
                                             </h3>
                                             <h3>
                                                 <span>
-                                                    {playerData2.include !== '' && 'With: ' + playerData2.include}
-                                                    {playerData2.exclude !== '' && 'Without: ' + playerData2.exclude}
+                                                    <div>
+                                                        {playerData2.include.find(p => p.gsis_id) && 'With: ' + playerData2.include.map(p => ' ' + p.display_name)}
+                                                    </div>
+                                                    <div>
+                                                        {playerData2.exclude.find(p => p.gsis_id) && 'Without: ' + playerData2.exclude.map(p => ' ' + p.display_name)}
+                                                    </div>
                                                 </span>
                                             </h3>
                                             <h2>

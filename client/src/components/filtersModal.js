@@ -1,16 +1,23 @@
 import Dropdown from './dropdown';
-import { useEffect, forwardRef } from 'react';
+import { useEffect, forwardRef, useState } from 'react';
 import players from '../player_ids.json';
 
 const FiltersModal = forwardRef(({
+    playerToSearch,
     playerToInclude,
     setPlayerToInclude,
+    removePlayertoInclude,
     playerToExclude,
     setPlayerToExclude,
+    removePlayertoExclude,
     setFiltersModalVisible,
     breakoutby,
     setBreakoutby
 }, ref) => {
+    const [playerToIncludeSearched, setPlayerToIncludeSearched] = useState('');
+    const [playerToExcludeSearched, setPlayerToExcludeSearched] = useState('');
+
+    console.log({ playerToInclude, playerToExclude })
 
     useEffect(() => {
         if (ref.current !== null) {
@@ -29,28 +36,73 @@ const FiltersModal = forwardRef(({
         };
     }, []);
 
-    console.log({ playerToInclude })
+    useEffect(() => {
+        if (playerToIncludeSearched?.gsis_id) {
+            setPlayerToInclude(playerToIncludeSearched)
+            setPlayerToIncludeSearched('')
+        }
+    }, [playerToIncludeSearched])
+
+    useEffect(() => {
+        if (playerToExcludeSearched?.gsis_id) {
+            setPlayerToExclude(playerToExcludeSearched)
+            setPlayerToExcludeSearched('')
+        }
+    }, [playerToExcludeSearched])
 
     return <div className='filters-modal' ref={ref}>
         <i class="fa-solid fa-rectangle-xmark" onClick={() => setFiltersModalVisible(false)}></i>
         <div>
-            <label>
+            <div className='label'>
                 Include
+                <div>
+                    {
+                        playerToInclude.map(player => <p key={player.gsis_id}>{player.display_name}<button type="reset" onClick={() => removePlayertoInclude(player)} type='button'>x</button></p>)
+                    }
+                </div>
                 <Dropdown
-                    searched={playerToInclude}
-                    setSearched={setPlayerToInclude}
-                    list={players}
+                    searched={playerToIncludeSearched}
+                    setSearched={setPlayerToIncludeSearched}
+                    list={
+                        players
+                            .filter(player => {
+                                return (
+                                    player.gsis_id !== playerToSearch?.gsis_id
+                                    &&
+                                    !playerToInclude.find(pi => pi.gsis_id === player.gsis_id)
+                                    && !playerToExclude.find(pe => pe.gsis_id === player.gsis_id)
+
+                                )
+                            })
+                    }
+                    disabled={playerToInclude.length >= 3}
                 />
-            </label>
-            <label>
+            </div>
+            <div className='label'>
                 Exclude
+                <div>
+                    {
+                        playerToExclude.map(player => <p key={player.gsis_id}>{player.display_name}<button type="reset" onClick={() => removePlayertoExclude(player)} type='button'>x</button></p>)
+                    }
+                </div>
                 <Dropdown
-                    searched={playerToExclude}
-                    setSearched={setPlayerToExclude}
-                    list={players}
+                    searched={playerToExcludeSearched}
+                    setSearched={setPlayerToExcludeSearched}
+                    list={
+                        players
+                            .filter(player => {
+                                return (
+                                    player.gsis_id !== playerToSearch?.gsis_id
+                                    &&
+                                    !playerToInclude.find(pi => pi.gsis_id === player.gsis_id)
+                                    && !playerToExclude.find(pe => pe.gsis_id === player.gsis_id)
+                                )
+                            })
+                    }
+                    disabled={playerToExclude.length >= 3}
                 />
-            </label>
-            <label>
+            </div>
+            <div className='label'>
                 Breakout By
                 <select value={breakoutby} onChange={(e) => setBreakoutby(e.target.value)}>
                     <option></option>
@@ -59,7 +111,7 @@ const FiltersModal = forwardRef(({
                     <option>aDot</option>
                     <option>QB</option>
                 </select>
-            </label>
+            </div>
         </div>
     </div>
 })

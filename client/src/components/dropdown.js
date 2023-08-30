@@ -7,7 +7,8 @@ const Dropdown = ({
     list,
     searched,
     setSearched,
-    sendDropdownVisible
+    sendDropdownVisible,
+    disabled
 }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [dropdownOptions, setDropdownOptions] = useState([]);
@@ -35,40 +36,27 @@ const Dropdown = ({
     }, [dropdownVisible])
 
     useEffect(() => {
-        if (searched?.display_name) {
+        if (searched?.display_name || searched === '') {
             setDropdownVisible(false)
         } else {
             setDropdownVisible(true)
         }
     }, [searched])
 
+    const format = (string) => {
+        return string
+            .toLowerCase()
+            .replace(/[^a-z0-9 ]/g, "")
+    }
+
     const getOptions = useCallback((s) => {
         const all_options = list
-        const options = s.trim() === "" ? all_options : all_options.filter(x =>
-            x.display_name?.trim().toLowerCase()
-                .replace(/[^a-z0-9]/g, "")
-                .includes(s.replace(/[^a-z0-9]/g, "").trim().toLowerCase()))
-            .sort(
-                (a, b) => a.display_name
-                    ?.trim()
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]/g, "")
-                    .indexOf(
-                        s
-                            .replace(/[^a-z0-9]/g, "")
-                            .trim()
-                            .toLowerCase()
-                    )
-                    - b.display_name
-                        ?.trim()
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]/g, "")
-                        .indexOf(
-                            s
-                                .replace(/[^a-z0-9]/g, "")
-                                .trim()
-                                .toLowerCase()
-                        )
+        const options = s.trim() === '' ? all_options : all_options
+            .sort((a, b) =>
+                (format(b.display_name).split(' ').indexOf(format(s.trim())) || 999)
+                - (format(a.display_name).split(' ').indexOf(format(s.trim())) || 999)
+                || (format(b.display_name).trim().indexOf(format(s.trim())) || 999)
+                - (format(a.display_name).trim().indexOf(format(s.trim())) || 999)
 
             )
 
@@ -82,8 +70,8 @@ const Dropdown = ({
         let visible;
 
         if (s === '') {
-            options = [];
-            visible = false
+            options = list;
+            visible = true
             setSearched(s)
         } else if (list.map(x => x.display_name?.trim().toLowerCase()).includes(s.trim().toLowerCase())) {
 
@@ -115,12 +103,14 @@ const Dropdown = ({
         }
         <input
             onChange={(e) => handleSearch(e.target.value)}
-            onFocus={(e) => e.target.value === "" ? handleSearch(" ") : null}
+            onBeforeInput={(e) => e.target.value?.trim() === "" ? handleSearch(" ") : null}
+            onFocus={(e) => e.target.value?.trim() === "" ? handleSearch(" ") : null}
             className={'search'}
             placeholder={placeholder}
             type="text"
             value={searched?.display_name || searched}
             autoComplete={'off'}
+            disabled={disabled}
         />
         {
             dropdownVisible ?

@@ -8,17 +8,21 @@ const Plays = db.plays;
 exports.player = async (req, res) => {
     const filters = [];
 
-    if (req.query.include.includes('-')) {
-        console.log('include ' + req.query.include)
-        filters.push({ [Op.contains]: [req.query.include] })
-    }
+    req.query.include.map(include => {
+        if (include?.gsis_id?.includes('-')) {
+            console.log('include ' + include.display_name)
+            filters.push({ [Op.contains]: [include.gsis_id] })
+        }
+    })
 
-    if (req.query.exclude.includes('-')) {
-        console.log('exclude ' + req.query.exclude)
+    req.query.exclude.map(exclude => {
+        if (exclude?.gsis_id?.includes('-')) {
+            console.log('exclude ' + exclude.display_name)
 
-        filters.push(Sequelize.literal(`NOT ('${req.query.exclude}' = ANY (offense_players))`),
-        )
-    }
+            filters.push(Sequelize.literal(`NOT ('${exclude.gsis_id}' = ANY (offense_players))`),
+            )
+        }
+    })
 
     let attributes = [
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
@@ -302,6 +306,7 @@ exports.player = async (req, res) => {
 
     res.send({
         ...player_raw[0],
+        ...req.query,
         player_id: req.query.player_id,
         player_breakoutby: player_breakoutby?.filter(x => x?.[key] !== 'Unknown')
     })
