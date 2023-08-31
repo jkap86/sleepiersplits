@@ -20,7 +20,19 @@ module.exports = (sequelize, Sequelize) => {
         "receiver_player_id",
         "receiving_yards",
         "rusher_player_id",
-        "rushing_yards"
+        "rushing_yards",
+        "yrdln",
+        "ydstogo",
+        "defenders_in_box",
+        "defense_personnel",
+        "defense_players",
+        "home_team",
+        "away_team",
+        "posteam",
+        "defteam",
+        "posteam_score",
+        "defteam_score",
+        "down"
     ]
 
     const Plays = sequelize.define('plays', {
@@ -35,7 +47,7 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         ...Object.fromEntries(headers.map(header => {
-            if (header === 'offense_players') {
+            if (['offense_players', 'defense_players'].includes(header)) {
                 return [header, { type: Sequelize.ARRAY(Sequelize.STRING) }]
             } else {
                 return [header, { type: Sequelize.TEXT }]

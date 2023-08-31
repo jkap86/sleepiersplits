@@ -127,7 +127,7 @@ const RecComp = () => {
                     setFiltersModalVisible={(value) => dispatch(setReceivingCompState({ filtersModalVisible: value }))}
                     breakoutby={breakoutby}
                     setBreakoutby={(value) => dispatch(setReceivingCompState({ breakoutby: value }))}
-
+                    view={'Receiving Comparison'}
                 />
                 : null
         }

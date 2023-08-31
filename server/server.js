@@ -42,7 +42,10 @@ function start() {
             console.log("Failed to sync db: " + err.message);
         });
 
+
+    require('./routes/dbMgmt.routes')(app);
     require('./routes/receivingSummary.routes')(app);
+    require('./routes/rushSummary.routes')(app);
     require('./routes/receivingTop50.routes')(app);
 
 

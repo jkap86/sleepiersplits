@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import RecComp from './views/recComp';
 import RecTop50 from './views/recTop50';
+import RushComp from './views/rushComp';
 
 const Main = () => {
     const [view, setView] = useState('Receiving Comparison');
@@ -15,6 +16,9 @@ const Main = () => {
         case 'Receiving Top 50':
             display = <RecTop50 />
             break;
+        case 'Rushing Comparison':
+            display = <RushComp />
+            break;
         default:
             break;
     }
@@ -22,6 +26,7 @@ const Main = () => {
     return <div className='player-container' >
         <select className='nav' value={view} onChange={(e) => setView(e.target.value)}>
             <option>Receiving Comparison</option>
+            <option>Rushing Comparison</option>
             <option>Receiving Top 50</option>
         </select>
         <div className="player-search">

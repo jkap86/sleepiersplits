@@ -3,6 +3,7 @@ import { useEffect, forwardRef, useState } from 'react';
 import players from '../player_ids.json';
 
 const FiltersModal = forwardRef(({
+    view,
     playerToSearch,
     playerToInclude,
     setPlayerToInclude,
@@ -107,9 +108,10 @@ const FiltersModal = forwardRef(({
                 <select value={breakoutby} onChange={(e) => setBreakoutby(e.target.value)}>
                     <option></option>
                     <option>season</option>
-                    <option>formation</option>
-                    <option>aDot</option>
-                    <option>QB</option>
+                    {view === 'Receiving Comparison' ? <option>formation</option> : null}
+                    {view === 'Receiving Comparison' ? <option>QB</option> : null}
+                    {view === 'Receiving Comparison' ? <option>aDot</option> : null}
+                    {view === 'Rushing Comparison' ? <option>down</option> : null}
                 </select>
             </div>
         </div>
