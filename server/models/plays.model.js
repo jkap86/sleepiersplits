@@ -32,7 +32,8 @@ module.exports = (sequelize, Sequelize) => {
         "defteam",
         "posteam_score",
         "defteam_score",
-        "down"
+        "down",
+        "weather"
     ]
 
     const Plays = sequelize.define('plays', {

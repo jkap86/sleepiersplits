@@ -45,7 +45,8 @@ exports.addColumns = async (req, res) => {
                             "defteam",
                             "posteam_score",
                             "defteam_score",
-                            "down"
+                            "down",
+                            "weather"
                         ]
                     });
                 } catch (error) {

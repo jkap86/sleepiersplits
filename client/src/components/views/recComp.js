@@ -7,12 +7,12 @@ import FiltersModal from '../filtersModal';
 import { loadingIcon } from '../loadingicon';
 import headshot from '../../images/headshot.png';
 import { useEffect } from 'react';
+import { playerSummaryForm } from '../forms';
 
 const RecComp = () => {
     const dispatch = useDispatch();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const {
-        whichPlayer,
         playerToSearch1,
         playerToSearch2,
         playerToInclude1,
@@ -27,7 +27,8 @@ const RecComp = () => {
         filtersModalVisible,
         playerData1,
         playerData2,
-        isLoading
+        isLoading1,
+        isLoading2
     } = useSelector(state => state.recComp);
     const filtersModalRef = useRef();
 
@@ -37,93 +38,56 @@ const RecComp = () => {
     const keys_one = [];
     const keys_two = [];
 
+    const form1 = playerSummaryForm(
+        dispatch,
+        fetchReceivingStats,
+        setReceivingCompState,
+        'Player 1',
+        playerToSearch1,
+        startSeason,
+        startWeek,
+        endSeason,
+        endWeek,
+        setDropdownVisible
+    )
 
+    const form2 = playerSummaryForm(
+        dispatch,
+        fetchReceivingStats,
+        setReceivingCompState,
+        'Player 2',
+        playerToSearch2,
+        startSeason,
+        startWeek,
+        endSeason,
+        endWeek,
+        setDropdownVisible
+    )
 
     return <>
-        <form onSubmit={(e) => dispatch(fetchReceivingStats(e))}>
-            <div>
-                <label>
-                    <span onClick={() => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { whichPlayer: 'Player 2' } : { whichPlayer: 'Player 1' }))}>{whichPlayer}</span>
-                    <Dropdown
-                        searched={whichPlayer === 'Player 1' ? playerToSearch1 : playerToSearch2}
-                        setSearched={(value) => whichPlayer === 'Player 1'
-                            ? dispatch(setReceivingCompState({ playerToSearch1: value }))
-                            : dispatch(setReceivingCompState({ playerToSearch2: value }))
-                        }
-                        list={players}
-                        sendDropdownVisible={(data) => setDropdownVisible(data)}
-                    />
-                    <i onClick={() => dispatch(setReceivingCompState({ filtersModalVisible: true }))} className="fa-solid fa-filter"></i>
-                </label>
-            </div>
-            <div className='range-container'>
-                <div className='range'>
-                    <label>
-                        FROM
-                        <div>
-                            <select value={startSeason} onChange={(e) => dispatch(setReceivingCompState({ startSeason: e.target.value }))}>
-                                <option>2022</option>
-                                <option>2021</option>
-                                <option>2020</option>
-                                <option>2019</option>
-                                <option>2018</option>
-                                <option>2017</option>
-                                <option>2016</option>
-                            </select>
-                            <em>Week</em>
-                            <select value={startWeek} onChange={(e) => dispatch(setReceivingCompState({ startWeek: e.target.value }))}>
-                                {
-                                    Array.from(Array(18).keys()).map(key => {
-                                        return <option key={key + 1}>
-                                            {key + 1}
-                                        </option>
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </label>
+        <div className='form_wrapper one'>
+            {form1}
+        </div>
+        {
+            !playerFound1 && !isLoading1
+                ? null
+                : <div className='form_wrapper two'>
+                    {form2}
                 </div>
-                <div className='range'>
-                    <label>
-                        TO
-                        <div>
-                            <select value={endSeason} onChange={(e) => dispatch(setReceivingCompState({ endSeason: e.target.value }))}>
-                                <option>2022</option>
-                                <option>2021</option>
-                                <option>2020</option>
-                                <option>2019</option>
-                                <option>2018</option>
-                                <option>2017</option>
-                                <option>2016</option>
-                            </select>
-                            <em>Week</em>
-                            <select value={endWeek} onChange={(e) => dispatch(setReceivingCompState({ endWeek: e.target.value }))}>
-                                {
-                                    Array.from(Array(18).keys()).map(key => {
-                                        return <option key={key + 1}>
-                                            {key + 1}
-                                        </option>
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            <button type="submit" >Search</button>
-        </form>
+        }
+
         {
             filtersModalVisible ?
                 <FiltersModal
                     ref={filtersModalRef}
-                    whichPlayer={whichPlayer}
-                    playerToSearch={whichPlayer === 'Player 1' ? playerToSearch1 : playerToSearch2}
-                    playerToInclude={whichPlayer === 'Player 1' ? playerToInclude1 : playerToInclude2}
-                    setPlayerToInclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToInclude1: [...playerToInclude1, value] } : { playerToInclude2: [...playerToInclude2, value] }))}
-                    removePlayertoInclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToInclude1: playerToInclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToInclude2: playerToInclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
-                    playerToExclude={whichPlayer === 'Player 1' ? playerToExclude1 : playerToExclude2}
-                    setPlayerToExclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToExclude1: [...playerToExclude1, value] } : { playerToExclude2: [...playerToExclude2, value] }))}
-                    removePlayertoExclude={(value) => dispatch(setReceivingCompState(whichPlayer === 'Player 1' ? { playerToExclude1: playerToExclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToExclude2: playerToExclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
+                    whichPlayer={filtersModalVisible}
+                    playerToSearch={filtersModalVisible === 'Player 1' ? playerToSearch1 : playerToSearch2}
+                    playerToInclude={filtersModalVisible === 'Player 1' ? playerToInclude1 : playerToInclude2}
+                    setPlayerToInclude={(value) => dispatch(setReceivingCompState(filtersModalVisible === 'Player 1' ? { playerToInclude1: [...playerToInclude1, value] } : { playerToInclude2: [...playerToInclude2, value] }))}
+                    removePlayertoInclude={(value) => dispatch(setReceivingCompState(filtersModalVisible === 'Player 1' ? { playerToInclude1: playerToInclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToInclude2: playerToInclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
+                    playerToExclude={filtersModalVisible === 'Player 1' ? playerToExclude1 : playerToExclude2}
+                    setPlayerToExclude={(value) => dispatch(setReceivingCompState(filtersModalVisible === 'Player 1' ? { playerToExclude1: [...playerToExclude1, value] } : { playerToExclude2: [...playerToExclude2, value] }))}
+                    removePlayertoExclude={(value) => dispatch(setReceivingCompState(filtersModalVisible === 'Player 1' ? { playerToExclude1: playerToExclude1.filter(pi => pi.gsis_id !== value.gsis_id) } : { playerToExclude2: playerToExclude2.filter(pi => pi.gsis_id !== value.gsis_id) }))}
                     setFiltersModalVisible={(value) => dispatch(setReceivingCompState({ filtersModalVisible: value }))}
                     breakoutby={breakoutby}
                     setBreakoutby={(value) => dispatch(setReceivingCompState({ breakoutby: value }))}
@@ -132,14 +96,14 @@ const RecComp = () => {
                 : null
         }
         {
-            (dropdownVisible || (!playerFound1 && !playerFound2 && !isLoading))
+            (dropdownVisible || (!playerFound1 && !playerFound2 && !isLoading1 && !isLoading2))
                 ? null
                 :
                 <>
-                    {(playerFound1?.display_name || (whichPlayer === 'Player 1' && isLoading))
+                    {(playerFound1?.display_name || isLoading1)
                         ? <div className='player-card one'>
                             {
-                                (whichPlayer === 'Player 1' && isLoading)
+                                (isLoading1)
                                     ? loadingIcon
                                     : <>
                                         <h1>
@@ -271,12 +235,12 @@ const RecComp = () => {
                         : null
                     }
                     {
-                        (playerFound2?.display_name || (whichPlayer === 'Player 2' && isLoading))
+                        (playerFound2?.display_name || isLoading2)
                             ? <div
                                 className='player-card two'
                             >
                                 {
-                                    (whichPlayer === 'Player 2' && isLoading)
+                                    (isLoading2)
                                         ? loadingIcon
                                         : <>
                                             <h1>

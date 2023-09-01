@@ -13,30 +13,39 @@ const initialState = {
     endSeason: 2022,
     endWeek: 18,
     breakoutby: '',
-    isLoading: false,
+    isLoading1: false,
+    isLoading2: false,
     filtersModalVisible: false
 };
 
 const rushCompReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'FETCH_RUSH_COMPARISON_START':
-            return { ...state, isLoading: true }
+            if (action.whichPlayer === 'Player 1') {
+                return { ...state, isLoading1: true }
+            } else {
+                return { ...state, isLoading2: true }
+            }
         case 'FETCH_RUSH_COMPARISON_SUCCESS':
-            if (state.whichPlayer === 'Player 1') {
+            if (action.payload.whichPlayer === 'Player 1') {
                 return {
                     ...state,
                     playerData1: action.payload,
-                    isLoading: false,
+                    isLoading1: false,
                 }
             } else {
                 return {
                     ...state,
                     playerData2: action.payload,
-                    isLoading: false,
+                    isLoading2: false,
                 }
             };
         case 'FETCH_RUSH_COMPARISON_FAILURE':
-            return { ...state, isLoading: false, error: action.payload }
+            if (action.payload.whichPlayer === 'Player 1') {
+                return { ...state, isLoading1: false, error: action.payload }
+            } else {
+                return { ...state, isLoading2: false, error: action.payload }
+            }
         case 'SET_STATE_RUSH_COMP':
             return {
                 ...state,

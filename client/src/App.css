@@ -36,6 +36,10 @@ body {
   position: relative;
 }
 
+.click:hover {
+  cursor: pointer;
+}
+
 h1 {
   color: var(--color2);
   font-family: var(--font2);
@@ -147,8 +151,29 @@ h3>span {
   filter: brightness(2);
 }
 
+div.form_wrapper {
+  display: inline-flex;
+  width: 50%;
+  background-color: var(--color1);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+div.form_wrapper.one {
+  background-image: radial-gradient(darkblue -50%, transparent 100%);
+  box-shadow: inset 0 0 10rem darkblue, 0 0 5rem white;
+}
+
+div.form_wrapper.two {
+  background-image: radial-gradient(darkred -50%, transparent 100%);
+  box-shadow: inset 0 0 10rem darkred, 0 0 5rem white;
+}
+
 form {
   font-size: inherit;
+  display: inline;
+  width: 50%;
   width: fit-content;
   margin: auto;
   display: flex;
@@ -156,7 +181,6 @@ form {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: var(--color1);
 }
 
 form>button[type='submit'] {
@@ -172,12 +196,13 @@ form>button[type='submit'] {
   border: .5rem groove #301934;
   border-radius: 5rem;
   box-shadow: inset 0 0 3rem #301934, 0 0 1.5rem white;
-  text-shadow: 0 0 .25rem white;
+  text-shadow: 0 0 .25rem black, 0 0 .5rem white;
 }
 
 form>div>div.label,
 form>div>label {
   margin: auto;
+  font-size: 3.5rem;
 }
 
 div.label>div {
@@ -193,6 +218,30 @@ div.label>div>p {
   background-color: rgba(0, 0, 0, .5);
   position: relative;
   padding: 1rem 3rem;
+}
+
+div.icon_wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  margin: auto;
+  background-image: radial-gradient(transparent -100%, rgba(0, 0, 0, .75) 100%);
+  border-radius: 10rem;
+  box-shadow: 0 0 1.5rem white;
+  filter: contrast(2);
+}
+
+p.icon_title {
+  color: red;
+  position: absolute;
+  z-index: 1;
+  font-family: var(--font4);
+  font-size: 3rem;
+  font-weight: 900;
+
+  text-shadow: 0 0 .5rem black, 0 0 1rem white;
 }
 
 div.label>div>p>button {
@@ -222,17 +271,37 @@ li {
 div.range-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%;
   margin: auto;
 
 }
 
-div.range {
-  margin: 1rem;
+table.range {
+  border: none;
+  margin-top: 2rem;
+  background-color: #1a1c20;
+  opacity: .9;
+  filter: brightness(2);
 }
 
+table.range th,
+table.range td {
+  background-image: none;
+  padding: .25rem;
+}
 
+table.range td>select {
+  border: none;
+  background-color: #1a1c20;
+  box-shadow: none;
+  font-size: 3rem;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: unset;
+}
 
 label,
 div.label {
@@ -250,18 +319,10 @@ caption {
   font-size: 3.5rem;
 }
 
-div.range>label {
-  margin: .5rem;
-  display: flex;
-  flex-direction: column;
-}
 
-div.range>label>div>em {
-  font-size: 2rem;
-}
 
 select {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-family: var(--font3);
   margin: 1rem;
   padding: 1rem;
@@ -292,19 +353,21 @@ div.dropdown_container>img {
   background-color: transparent;
   filter: drop-shadow(0 0 .25rem black);
   position: absolute;
-  left: 5rem;
+  left: 3rem;
 }
 
 input.search {
   height: 6rem;
   font-size: 3rem;
-  padding-left: 10rem;
+  padding-left: 4rem;
+  text-align: center;
   border-radius: 5rem;
   border: .75rem groove blue;
   font-weight: 900;
   background-color: var(--color2);
   margin: 1rem;
   box-shadow: inset 0 0 3rem black, 0 0 1rem gray;
+  width: 100%;
 }
 
 
@@ -334,7 +397,7 @@ ol.dropdown>li>button>p {
   justify-content: center;
   align-items: center;
   margin: auto;
-
+  width: 100%;
   color: white;
   font-family: var(--font4);
   font-weight: 900;
@@ -344,16 +407,19 @@ ol.dropdown>li>button>p {
   filter: contrast(1.25);
   opacity: 1;
   background-color: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: rem;
 }
 
-select {}
 
 i.fa-filter {
   font-size: 7rem;
   color: transparent;
   background-clip: text;
   background-image: radial-gradient(blue -100%, var(--color2) 100%);
-  filter: drop-shadow(0 0 1.5rem var(--te)) drop-shadow(0 0 1.75rem red);
+  filter: drop-shadow(0 0 .5rem red) drop-shadow(0 0 1rem orangered);
+
   margin: auto;
   margin-top: 2rem;
   width: fit-content;
@@ -388,8 +454,8 @@ div.player-card {
 }
 
 div.player-card.two {
-  background-image: radial-gradient(darkred -50%, transparent 100%);
-  box-shadow: inset 0 0 10rem darkred, 0 0 5rem white;
+  background-image: radial-gradient(red -50%, transparent 100%);
+  box-shadow: inset 0 0 10rem red, 0 0 5rem white;
 }
 
 div.player-card table {

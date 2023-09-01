@@ -1,7 +1,8 @@
 import axios from 'axios';
 import players from '../../player_ids.json';
 
-export const fetchRushingStats = (e) => async (dispatch, getState) => {
+export const fetchRushingStats = (e, whichPlayer) => async (dispatch, getState) => {
+    console.log(whichPlayer)
     e.preventDefault();
 
     const state = getState();
@@ -9,17 +10,17 @@ export const fetchRushingStats = (e) => async (dispatch, getState) => {
     const { rushComp } = state;
 
     const player_to_find = players
-        .find(p => (rushComp.whichPlayer === 'Player 1' && p.display_name === rushComp.playerToSearch1?.display_name)
-            || (rushComp.whichPlayer === 'Player 2' && p.display_name === rushComp.playerToSearch2?.display_name)
+        .find(p => (whichPlayer === 'Player 1' && p.display_name === rushComp.playerToSearch1?.display_name)
+            || (whichPlayer === 'Player 2' && p.display_name === rushComp.playerToSearch2?.display_name)
         );
 
-    const include = rushComp.whichPlayer === 'Player 1' ? rushComp.playerToInclude1 : rushComp.playerToInclude2;
-    const exclude = rushComp.whichPlayer === 'Player 1' ? rushComp.playerToExclude1 : rushComp.playerToExclude2;
+    const include = whichPlayer === 'Player 1' ? rushComp.playerToInclude1 : rushComp.playerToInclude2;
+    const exclude = whichPlayer === 'Player 1' ? rushComp.playerToExclude1 : rushComp.playerToExclude2;
 
 
 
     if (player_to_find) {
-        dispatch({ type: 'FETCH_RUSH_COMPARISON_START' });
+        dispatch({ type: 'FETCH_RUSH_COMPARISON_START', whichPlayer: whichPlayer });
 
         try {
             const player = await axios.get('/player/rushsummary', {
@@ -37,12 +38,12 @@ export const fetchRushingStats = (e) => async (dispatch, getState) => {
             console.log(player.data)
             const data = {
                 ...player.data,
-                whichplayer: rushComp.whichplayer,
                 startSeason: rushComp.startSeason,
                 startWeek: rushComp.startWeek,
                 endSeason: rushComp.endSeason,
                 endWeek: rushComp.endWeek,
-                breakoutby: rushComp.breakoutby === 'QB' ? 'passer_player_id' : rushComp.breakoutby
+                breakoutby: rushComp.breakoutby === 'QB' ? 'passer_player_id' : rushComp.breakoutby,
+                whichPlayer: whichPlayer
             }
 
             dispatch({

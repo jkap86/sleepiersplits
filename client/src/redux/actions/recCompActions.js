@@ -1,7 +1,8 @@
 import axios from 'axios';
 import players from '../../player_ids.json';
 
-export const fetchReceivingStats = (e) => async (dispatch, getState) => {
+export const fetchReceivingStats = (e, whichPlayer) => async (dispatch, getState) => {
+
     e.preventDefault();
 
     const state = getState();
@@ -9,17 +10,17 @@ export const fetchReceivingStats = (e) => async (dispatch, getState) => {
     const { recComp } = state;
 
     const player_to_find = players
-        .find(p => (recComp.whichPlayer === 'Player 1' && p.display_name === recComp.playerToSearch1?.display_name)
-            || (recComp.whichPlayer === 'Player 2' && p.display_name === recComp.playerToSearch2?.display_name)
+        .find(p => (whichPlayer === 'Player 1' && p.display_name === recComp.playerToSearch1?.display_name)
+            || (whichPlayer === 'Player 2' && p.display_name === recComp.playerToSearch2?.display_name)
         );
 
-    const include = recComp.whichPlayer === 'Player 1' ? recComp.playerToInclude1 : recComp.playerToInclude2;
-    const exclude = recComp.whichPlayer === 'Player 1' ? recComp.playerToExclude1 : recComp.playerToExclude2;
+    const include = whichPlayer === 'Player 1' ? recComp.playerToInclude1 : recComp.playerToInclude2;
+    const exclude = whichPlayer === 'Player 1' ? recComp.playerToExclude1 : recComp.playerToExclude2;
 
     console.log(recComp.playerToInclude1)
 
     if (player_to_find) {
-        dispatch({ type: 'FETCH_REC_COMPARISON_START' });
+        dispatch({ type: 'FETCH_REC_COMPARISON_START', whichPlayer: whichPlayer });
 
         try {
             const player = await axios.get('/player/recsummary', {
@@ -37,12 +38,12 @@ export const fetchReceivingStats = (e) => async (dispatch, getState) => {
             console.log(player.data)
             const data = {
                 ...player.data,
-                whichplayer: recComp.whichplayer,
                 startSeason: recComp.startSeason,
                 startWeek: recComp.startWeek,
                 endSeason: recComp.endSeason,
                 endWeek: recComp.endWeek,
-                breakoutby: recComp.breakoutby === 'QB' ? 'passer_player_id' : recComp.breakoutby
+                breakoutby: recComp.breakoutby === 'QB' ? 'passer_player_id' : recComp.breakoutby,
+                whichPlayer: whichPlayer
             }
 
             dispatch({
