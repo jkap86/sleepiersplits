@@ -51,6 +51,7 @@ export const playerSummaryForm = (
                         <tr>
                             <td>
                                 <select value={startSeason} onChange={(e) => dispatch(setState({ startSeason: e.target.value }))}>
+                                    <option>2023</option>
                                     <option>2022</option>
                                     <option>2021</option>
                                     <option>2020</option>
@@ -73,6 +74,7 @@ export const playerSummaryForm = (
                             </td>
                             <td>
                                 <select value={endSeason} onChange={(e) => dispatch(setState({ endSeason: e.target.value }))}>
+                                    <option>2023</option>
                                     <option>2022</option>
                                     <option>2021</option>
                                     <option>2020</option>

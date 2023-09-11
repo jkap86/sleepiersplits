@@ -32,6 +32,7 @@ const RecTop50 = () => {
                         FROM
                         <div>
                             <select value={startSeason} onChange={(e) => dispatch(setReceivingTop50State({ startSeason: e.target.value }))}>
+                                <option>2023</option>
                                 <option>2022</option>
                                 <option>2021</option>
                                 <option>2020</option>
@@ -58,6 +59,7 @@ const RecTop50 = () => {
                         TO
                         <div>
                             <select value={endSeason} onChange={(e) => dispatch(setReceivingTop50State({ endSeason: e.target.value }))}>
+                                <option>2023</option>
                                 <option>2022</option>
                                 <option>2021</option>
                                 <option>2020</option>
@@ -140,10 +142,10 @@ const RecTop50 = () => {
                                                     {(parseInt(player.air_yards) / parseInt(player.targets)).toFixed(1)}
                                                 </td>
                                                 <td colSpan={3}>
-                                                    {'-'}
+                                                    {(parseInt(player.targets) / parseInt(player.routes)).toFixed(2)}
                                                 </td>
                                                 <td colSpan={3}>
-                                                    {'-'}
+                                                    {(parseInt(player.receiving_yards) / parseInt(player.routes)).toFixed(2)}
                                                 </td>
                                             </tr>
                                         })

@@ -1,7 +1,7 @@
 const initialState = {
-    startSeason: 2022,
+    startSeason: 2023,
     startWeek: 1,
-    endSeason: 2022,
+    endSeason: 2023,
     endWeek: 18,
     category: 'receiving',
     statistic: 'receiving_yards',
