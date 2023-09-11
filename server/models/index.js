@@ -25,7 +25,8 @@ db.sequelize = sequelize;
 db.plays = require("./plays.model.js")(sequelize, Sequelize);
 db.players = require("./players.model")(sequelize, Sequelize);
 
-
+db.plays.belongsToMany(db.players, { through: 'playerPlays' });
+db.players.belongsToMany(db.plays, { through: 'playerPlays' });
 
 /*
 db.users = require("./user.model.js")(sequelize, Sequelize);

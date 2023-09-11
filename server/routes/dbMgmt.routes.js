@@ -4,6 +4,9 @@ module.exports = app => {
 
     router.get('/addcolumns', dbMgmt.addColumns);
 
+    router.get('/addidcolumn', dbMgmt.createIdColumn);
+
+    router.get('/populateplayerplays', dbMgmt.populateplayerplays)
 
     app.use('/db', router);
 }

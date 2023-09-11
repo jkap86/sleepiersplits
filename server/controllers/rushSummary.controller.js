@@ -36,8 +36,8 @@ exports.player = async (req, res) => {
                             ELSE 0
                         END`)), 'carries'],
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
-                            WHEN touchdown = '' THEN 0
-                            WHEN rusher_player_id = '${req.query.player_id}' AND rush_attempt = '1' THEN CAST(touchdown AS INTEGER)
+                            WHEN rush_touchdown = '' THEN 0
+                            WHEN rusher_player_id = '${req.query.player_id}' AND rush_attempt = '1' THEN CAST(rush_touchdown AS INTEGER)
                             ELSE 0
                         END`)), 'rushing_touchdowns'],
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
@@ -49,8 +49,8 @@ exports.player = async (req, res) => {
                             ELSE CAST(complete_pass AS INTEGER)
                         END`)), 'receptions'],
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
-                            WHEN touchdown = '' OR receiver_player_id != '${req.query.player_id}' THEN 0
-                            ELSE CAST(touchdown AS INTEGER)
+                            WHEN pass_touchdown = '' OR receiver_player_id != '${req.query.player_id}' THEN 0
+                            ELSE CAST(pass_touchdown AS INTEGER)
                         END`)), 'receiving_touchdowns'],
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
             WHEN receiver_player_id = '${req.query.player_id}' THEN 1

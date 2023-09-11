@@ -38,8 +38,8 @@ exports.player = async (req, res) => {
                             ELSE CAST(complete_pass AS INTEGER)
                         END`)), 'receptions'],
         [Sequelize.fn('SUM', Sequelize.literal(`CASE
-                            WHEN touchdown = '' OR receiver_player_id != '${req.query.player_id}' THEN 0
-                            ELSE CAST(touchdown AS INTEGER)
+                            WHEN pass_touchdown = '' OR receiver_player_id != '${req.query.player_id}' THEN 0
+                            ELSE CAST(pass_touchdown AS INTEGER)
                         END`)), 'touchdowns'],
         [Sequelize.fn('COUNT', Sequelize.col('game_id')), 'routes'],
         [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('game_id'))), 'games'],

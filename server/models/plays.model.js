@@ -37,15 +37,13 @@ module.exports = (sequelize, Sequelize) => {
     ]
 
     const Plays = sequelize.define('plays', {
-        play_id: {
+        id: {
             type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true
         },
         game_id: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            primaryKey: true
+            type: Sequelize.STRING
         },
         ...Object.fromEntries(headers.map(header => {
             if (['offense_players', 'defense_players'].includes(header)) {
