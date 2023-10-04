@@ -126,10 +126,10 @@ const RecComp = () => {
                                         <h3>
                                             <span>
                                                 <div>
-                                                    {playerData1.include.find(p => p.gsis_id) && 'With: ' + playerData1.include.map(p => ' ' + p.display_name)}
+                                                    {playerData1.include?.find(p => p.gsis_id) && 'With: ' + playerData1.include.map(p => ' ' + p.display_name)}
                                                 </div>
                                                 <div>
-                                                    {playerData1.exclude.find(p => p.gsis_id) && 'Without: ' + playerData1.exclude.map(p => ' ' + p.display_name)}
+                                                    {playerData1.exclude?.find(p => p.gsis_id) && 'Without: ' + playerData1.exclude.map(p => ' ' + p.display_name)}
                                                 </div>
                                             </span>
                                         </h3>

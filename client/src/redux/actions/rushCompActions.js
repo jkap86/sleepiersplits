@@ -23,17 +23,15 @@ export const fetchRushingStats = (e, whichPlayer) => async (dispatch, getState) 
         dispatch({ type: 'FETCH_RUSH_COMPARISON_START', whichPlayer: whichPlayer });
 
         try {
-            const player = await axios.get('/player/rushsummary', {
-                params: {
-                    player_id: player_to_find.gsis_id,
-                    include: include?.length > 0 ? include : ['0'],
-                    exclude: exclude?.length > 0 ? exclude : ['0'],
-                    startSeason: rushComp.startSeason,
-                    startWeek: rushComp.startWeek,
-                    endSeason: rushComp.endSeason,
-                    endWeek: rushComp.endWeek,
-                    breakoutby: rushComp.breakoutby === 'QB' ? 'passer_player_id' : rushComp.breakoutby,
-                }
+            const player = await axios.post('/player/rushsummary', {
+                player_id: player_to_find.gsis_id,
+                include: include?.length > 0 ? include : ['0'],
+                exclude: exclude?.length > 0 ? exclude : ['0'],
+                startSeason: rushComp.startSeason,
+                startWeek: rushComp.startWeek,
+                endSeason: rushComp.endSeason,
+                endWeek: rushComp.endWeek,
+                breakoutby: rushComp.breakoutby === 'QB' ? 'passer_player_id' : rushComp.breakoutby
             })
             console.log(player.data)
             const data = {

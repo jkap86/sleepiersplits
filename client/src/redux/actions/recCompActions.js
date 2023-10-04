@@ -23,17 +23,17 @@ export const fetchReceivingStats = (e, whichPlayer) => async (dispatch, getState
         dispatch({ type: 'FETCH_REC_COMPARISON_START', whichPlayer: whichPlayer });
 
         try {
-            const player = await axios.get('/player/recsummary', {
-                params: {
-                    player_id: player_to_find.gsis_id,
-                    include: include?.length > 0 ? include : ['0'],
-                    exclude: exclude?.length > 0 ? exclude : ['0'],
-                    startSeason: recComp.startSeason,
-                    startWeek: recComp.startWeek,
-                    endSeason: recComp.endSeason,
-                    endWeek: recComp.endWeek,
-                    breakoutby: recComp.breakoutby === 'QB' ? 'passer_player_id' : recComp.breakoutby,
-                }
+            const player = await axios.post('/player/recsummary', {
+
+                player_id: player_to_find.gsis_id,
+                include: include?.length > 0 ? include : ['0'],
+                exclude: exclude?.length > 0 ? exclude : ['0'],
+                startSeason: recComp.startSeason,
+                startWeek: recComp.startWeek,
+                endSeason: recComp.endSeason,
+                endWeek: recComp.endWeek,
+                breakoutby: recComp.breakoutby === 'QB' ? 'passer_player_id' : recComp.breakoutby,
+
             })
             console.log(player.data)
             const data = {

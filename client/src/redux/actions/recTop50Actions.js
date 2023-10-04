@@ -12,15 +12,15 @@ export const fetchTop50 = (e) => async (dispatch, getState) => {
     const { recTop50 } = state;
 
     try {
-        const topwr = await axios.get('/receiving/top50', {
-            params: {
-                category: recTop50.category,
-                statistic: recTop50.statistic,
-                startSeason: recTop50.startSeason,
-                startWeek: recTop50.startWeek,
-                endSeason: recTop50.endSeason,
-                endWeek: recTop50.endWeek
-            }
+        const topwr = await axios.post('/receiving/top50', {
+
+            category: recTop50.category,
+            statistic: recTop50.statistic,
+            startSeason: recTop50.startSeason,
+            startWeek: recTop50.startWeek,
+            endSeason: recTop50.endSeason,
+            endWeek: recTop50.endWeek
+
         })
 
         const data = {
