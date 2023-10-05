@@ -5,12 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server-install": "cd server && pip install -r requirements.txt",
-    "client-install": "cd client && npm install",
-    "postinstall": "npm run client-install && npm run server-install",
-    "start-server": "cd server && gunicorn app:app",
-    "start": "npm run start-server",
-    "build-client": "cd client && npm run build"
+    "start": "cd server && pip install -r requirements.txt && gunicorn app:app",
+    "postinstall": "cd client && npm install && npm run build"
   },
   "author": "",
   "license": "ISC"
