@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd server && pip install -r requirements.txt && python app.py",
+    "start": "cd server && pip install -r requirements.txt && app:app",
     "postinstall": "cd client && npm install && npm run build"
   },
   "author": "",
