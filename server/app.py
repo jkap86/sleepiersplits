@@ -5,6 +5,16 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+app = Flask(__name__, static_folder='../client/build', static_url_path='/')
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/<path>')
+def catch_all(path):
+    return app.send_static_file('index.html')
+
 @app.route('/cleanfile/<int:season>', methods=['GET'])
 def cleanfile(season):
     try:
