@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gunicorn wsgi:app",
+    "start": "cd server && pip install -r requirements.txt && gunicorn app:app",
     "postinstall": "cd client && npm install && npm run build"
   },
   "author": "",
