@@ -1,19 +1,12 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 app = Flask(__name__, static_folder='../client/build', static_url_path='/')
-
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
-
-@app.route('/<path>')
-def catch_all(path):
-    return app.send_static_file('index.html')
 
 @app.route('/cleanfile/<int:season>', methods=['GET'])
 def cleanfile(season):
@@ -405,6 +398,14 @@ def rushing():
         "games": df_range[df_range['receiver_player_id'] == player_id]['game_id'].nunique()
     })
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/<path>')
+def catch_all(path):
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get('PORT', 5000)) 
+    app.run(host='0.0.0.0', port=port)
