@@ -5,7 +5,7 @@ import os
 import threading
 import time
 import requests
-
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -58,15 +58,22 @@ def cleanfile(season):
             'defense_players'
         ]
 
-        input_file_path1 = f'./play_by_play_{season}.csv.gz'
-        input_file_path2 = f'./pbp_participation_{season}.csv'
+        input_file_url1 = f'https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz'
+        input_file_url2 = f'https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_{season}.csv'
         output_file_path = f'./all_pbp.csv.gz'
 
-        df1 = pd.read_csv(input_file_path1,
+        response1 = requests.get(input_file_url1)
+        response1.raise_for_status()
+
+        df1 = pd.read_csv(io.BytesIO(response1.content),
                           compression='gzip', low_memory=False)
         df1 = df1[columns1]
 
-        df2 = pd.read_csv(input_file_path2)
+        response2 = requests.get(input_file_url2)
+        response2.raise_for_status()
+
+        df2 = pd.read_csv(io.StringIO(response2.text))
+        df2 = df2.rename(columns={"nflverse_game_id": "game_id"})
         df2 = df2[columns2]
 
         df = pd.merge(df1, df2, on=['play_id', 'game_id'], how='inner')
