@@ -2,94 +2,16 @@ from flask import Flask, request, jsonify
 import pandas as pd
 from flask_cors import CORS
 import os
-import threading
-import time
 import requests
 import io
+import logging
+from modules.data.routes import data_blueprint
 
 app = Flask(__name__)
 CORS(app)
 
 app = Flask(__name__, static_folder='../client/build', static_url_path='/')
-
-
-@app.route('/cleanfile/<int:season>', methods=['GET'])
-def cleanfile(season):
-    try:
-        columns1 = [
-            "play_id",
-            "game_id",
-            "week",
-            "season",
-            "air_yards",
-            "interception",
-            "rush_attempt",
-            "pass_attempt",
-            "sack",
-            "touchdown",
-            "pass_touchdown",
-            "rush_touchdown",
-            "complete_pass",
-            "passer_player_id",
-            "passing_yards",
-            "receiver_player_id",
-            "receiving_yards",
-            "rusher_player_id",
-            "rushing_yards",
-            "yrdln",
-            "ydstogo",
-            "home_team",
-            "away_team",
-            "posteam",
-            "defteam",
-            "posteam_score",
-            "defteam_score",
-            "down",
-            "desc"
-        ]
-
-        columns2 = [
-            "play_id",
-            "game_id",
-            'offense_personnel',
-            'offense_players',
-            'defenders_in_box',
-            'defense_personnel',
-            'defense_players'
-        ]
-
-        input_file_url1 = f'https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz'
-        input_file_url2 = f'https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_{season}.csv'
-        output_file_path = f'./all_pbp.csv.gz'
-
-        response1 = requests.get(input_file_url1)
-        response1.raise_for_status()
-
-        df1 = pd.read_csv(io.BytesIO(response1.content),
-                          compression='gzip', low_memory=False)
-        df1 = df1[columns1]
-
-        response2 = requests.get(input_file_url2)
-        response2.raise_for_status()
-
-        df2 = pd.read_csv(io.StringIO(response2.text))
-        df2 = df2.rename(columns={"nflverse_game_id": "game_id"})
-        df2 = df2[columns2]
-
-        df = pd.merge(df1, df2, on=['play_id', 'game_id'], how='inner')
-
-        df_all = pd.read_csv(output_file_path, compression='gzip')
-        df_all_updated = pd.concat([df_all, df], ignore_index=True)
-
-        df_all_updated = df_all_updated.drop_duplicates()
-
-        df_all_updated.to_csv(
-            output_file_path, compression='gzip', index=False)
-
-        return jsonify({"message": f"File for {season} processed successfully!"})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+app.register_blueprint(data_blueprint)
 
 
 @app.route('/player/recsummary', methods=['POST'])
@@ -105,6 +27,7 @@ def receiving():
     df = pd.read_csv(file, compression='gzip', low_memory=False)
 
     df_range = df[
+
         (
             (df['season'] < 2021) & (df['week'] < 18) |
             (df['week'] < 19)
@@ -145,7 +68,8 @@ def receiving():
     routes = len(participation)
 
     targeted = df_range[
-        (df_range['receiver_player_id'] == player_id)
+        (df_range['receiver_player_id'] == player_id) &
+        (df_range['pass_attempt'] == 1)
     ]
     targets = len(targeted)
 
@@ -357,7 +281,10 @@ def top50_receiving():
             "touchdowns": rec_data['pass_touchdown'].sum(),
             "targets": len(rec_data),
             "game_id": rec_data['game_id'].nunique(),
-            "routes": len(df_range[df_range['offense_players'].str.contains(receiver, na=False)])
+            "routes": len(df_range[
+                (df_range['offense_players'].str.contains(receiver, na=False)) &
+                (df_range['pass_attempt'] == 1)
+            ])
         })
 
     return jsonify(result)
@@ -430,20 +357,7 @@ def catch_all(path):
     return app.send_static_file('index.html')
 
 
-def ping_server():
-    while True:
-        time.sleep(2 * 60)  # Sleep for 29 minutes
-        try:
-            response = requests.get(
-                'https://sleepiersplits-73b0aab383b9.herokuapp.com/')
-            print(f"Pinged server with status code: {response.status_code}")
-        except requests.RequestException as e:
-            print(f"Failed to ping server: {e}")
-
-
 if __name__ == '__main__':
-    t = threading.Thread(target=ping_server)
-    t.start()
 
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
