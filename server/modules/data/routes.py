@@ -6,7 +6,7 @@ import logging
 import io
 
 
-data_blueprint = Blueprint('users', __name__)
+data_blueprint = Blueprint('data', __name__)
 
 
 @data_blueprint.route('/cleanfile/<int:season>')
